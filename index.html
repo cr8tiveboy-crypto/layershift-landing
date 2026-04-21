@@ -356,8 +356,7 @@
             <button class="cta" id="submitBtn" type="submit">Join Waitlist</button>
 
             <div class="tiny">
-              This page is static. To make submissions save for real, connect the form to your backend,
-              Formspree, Supabase, or another endpoint.
+              Save entries directly to your Supabase <strong>waitlist</strong> table. Set your project URL and anon key below before publishing.
             </div>
 
             <div class="status" id="statusBox"></div>
@@ -392,17 +391,28 @@
     </div>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const SUPABASE_URL = "PASTE_YOUR_SUPABASE_URL_HERE";
+    const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY_HERE";
+    const WAITLIST_TABLE = "waitlist";
+
     const form = document.getElementById("waitlistForm");
     const statusBox = document.getElementById("statusBox");
     const submitBtn = document.getElementById("submitBtn");
 
-    // Replace this with a real endpoint later.
-    const WAITLIST_ENDPOINT = "";
-
     function showStatus(message, kind) {
       statusBox.textContent = message;
       statusBox.className = "status show " + kind;
+    }
+
+    function validateConfig() {
+      return (
+        SUPABASE_URL &&
+        SUPABASE_ANON_KEY &&
+        !SUPABASE_URL.includes("PASTE_YOUR_SUPABASE_URL_HERE") &&
+        !SUPABASE_ANON_KEY.includes("PASTE_YOUR_SUPABASE_ANON_KEY_HERE")
+      );
     }
 
     form.addEventListener("submit", async function (event) {
@@ -412,7 +422,7 @@
         name: form.name.value.trim(),
         email: form.email.value.trim(),
         role: form.role.value,
-        notes: form.notes.value.trim()
+        notes: form.notes.value.trim() || null,
       };
 
       if (!payload.name || !payload.email || !payload.role) {
@@ -420,30 +430,38 @@
         return;
       }
 
+      if (!validateConfig()) {
+        showStatus("Add your Supabase URL and anon key in this file before using the form.", "error");
+        return;
+      }
+
       submitBtn.disabled = true;
       submitBtn.textContent = "Submitting...";
 
       try {
-        if (WAITLIST_ENDPOINT) {
-          const response = await fetch(WAITLIST_ENDPOINT, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const { error } = await supabaseClient
+          .from(WAITLIST_TABLE)
+          .insert({
+            name: payload.name,
+            email: payload.email,
+            role: payload.role,
+            notes: payload.notes,
           });
 
-          if (!response.ok) {
-            throw new Error("Submission failed.");
-          }
-
-          form.reset();
-          showStatus("You’re on the waitlist. We’ll be in touch.", "success");
-        } else {
-          localStorage.setItem("layershift_waitlist_preview", JSON.stringify(payload));
-          form.reset();
-          showStatus("Waitlist form is working visually. Connect a real endpoint to store submissions.", "success");
+        if (error) {
+          throw error;
         }
+
+        form.reset();
+        showStatus("You’re on the waitlist. We’ll be in touch.", "success");
       } catch (error) {
-        showStatus("Something went wrong while submitting the form.", "error");
+        const message =
+          error && error.message
+            ? error.message
+            : "Something went wrong while saving your entry.";
+        showStatus(message, "error");
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = "Join Waitlist";
