@@ -3,16 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LayerShift — Local 3D Printing</title>
-  <meta name="description" content="Upload a 3D file and get it printed locally with LayerShift." />
+  <title>LayerShift — Join the Waitlist</title>
+  <meta
+    name="description"
+    content="Join the LayerShift waitlist to get early access to local 3D printing."
+  />
   <style>
     :root {
       --bg: #0a0a0a;
       --panel: #111111;
+      --panel-soft: rgba(255,255,255,0.03);
       --muted: #a3a3a3;
       --line: rgba(255,255,255,0.08);
       --accent: #ff7a00;
+      --accent-soft: rgba(255,122,0,0.12);
       --text: #ffffff;
+      --success: #86efac;
+      --danger: #fca5a5;
     }
 
     * { box-sizing: border-box; }
@@ -55,41 +62,10 @@
       text-decoration: none;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .ghost, .cta {
-      text-decoration: none;
-      border-radius: 12px;
-      padding: 11px 16px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: 0.2s ease;
-    }
-
-    .ghost {
-      border: 1px solid var(--line);
-      color: white;
-      background: rgba(255,255,255,0.02);
-    }
-
-    .ghost:hover { background: rgba(255,255,255,0.07); }
-
-    .cta {
-      background: var(--accent);
-      color: black;
-      border: 1px solid transparent;
-    }
-
-    .cta:hover { opacity: 0.9; }
-
     .hero {
       padding: 86px 0 56px;
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1.05fr 0.95fr;
       gap: 36px;
       align-items: center;
     }
@@ -113,17 +89,10 @@
 
     .hero p {
       color: var(--muted);
-      font-size: 1.1rem;
+      font-size: 1.08rem;
       line-height: 1.65;
       max-width: 58ch;
-      margin: 24px 0 0;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 14px;
-      margin-top: 30px;
-      flex-wrap: wrap;
+      margin: 22px 0 0;
     }
 
     .hero-card {
@@ -134,34 +103,123 @@
       box-shadow: 0 22px 60px rgba(0,0,0,0.35);
     }
 
-    .preview {
+    .waitlist-panel {
       border-radius: 22px;
       border: 1px solid var(--line);
       background: #0b0b0f;
-      padding: 20px;
+      padding: 22px;
     }
 
-    .preview-line {
-      height: 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      margin-bottom: 12px;
+    .waitlist-panel h2 {
+      margin: 0;
+      font-size: 1.45rem;
+      letter-spacing: -0.03em;
     }
 
-    .preview-line.short { width: 44%; }
-    .preview-line.medium { width: 68%; }
-    .preview-line.long { width: 88%; }
+    .waitlist-panel p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.96rem;
+    }
+
+    form {
+      margin-top: 22px;
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #d6d6d6;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      padding: 14px 15px;
+      font: inherit;
+      outline: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(255,122,0,0.6);
+      background: rgba(255,255,255,0.05);
+    }
+
+    textarea {
+      min-height: 104px;
+      resize: vertical;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .cta {
+      appearance: none;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-weight: 700;
+      font-size: 0.96rem;
+      cursor: pointer;
+      transition: 0.2s ease;
+      background: var(--accent);
+      color: black;
+    }
+
+    .cta:hover { opacity: 0.92; }
+    .cta:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .tiny {
+      font-size: 0.82rem;
+      color: #8d8d8d;
+      line-height: 1.5;
+    }
+
+    .status {
+      display: none;
+      margin-top: 14px;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .status.show { display: block; }
+    .status.success {
+      background: rgba(134,239,172,0.08);
+      border: 1px solid rgba(134,239,172,0.25);
+      color: var(--success);
+    }
+
+    .status.error {
+      background: rgba(252,165,165,0.08);
+      border: 1px solid rgba(252,165,165,0.22);
+      color: var(--danger);
+    }
 
     .badge-row {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      margin-top: 18px;
+      margin-top: 20px;
     }
 
     .badge {
       border: 1px solid rgba(255,122,0,0.22);
-      background: rgba(255,122,0,0.08);
+      background: var(--accent-soft);
       color: #ffb36b;
       padding: 8px 12px;
       border-radius: 999px;
@@ -170,7 +228,7 @@
     }
 
     .section {
-      padding: 18px 0 88px;
+      padding: 12px 0 88px;
     }
 
     .grid {
@@ -182,7 +240,7 @@
     .card {
       border: 1px solid var(--line);
       border-radius: 22px;
-      background: rgba(255,255,255,0.03);
+      background: var(--panel-soft);
       padding: 22px;
     }
 
@@ -226,6 +284,9 @@
       .grid {
         grid-template-columns: 1fr;
       }
+      .row {
+        grid-template-columns: 1fr;
+      }
       .nav {
         flex-direction: column;
         align-items: flex-start;
@@ -238,10 +299,6 @@
   <header>
     <div class="wrap nav">
       <a class="logo" href="/">LayerShift</a>
-      <div class="nav-links">
-        <a class="ghost" href="https://test.layershift.ca">Open Beta</a>
-        <a class="cta" href="https://test.layershift.ca">Try LayerShift</a>
-      </div>
     </div>
   </header>
 
@@ -249,26 +306,62 @@
     <section class="hero">
       <div>
         <div class="eyebrow">Local 3D Printing</div>
-        <h1>Upload a 3D file. Get it printed near you.</h1>
+        <h1>Join the waitlist for local 3D printing.</h1>
         <p>
-          Skip shipping delays. LayerShift connects customers with local 3D printers so parts get produced faster, closer, and with less friction.
+          LayerShift connects customers with nearby 3D printers so parts get produced faster,
+          closer, and with less friction. Join the waitlist and we’ll let you know when access opens.
         </p>
-        <div class="hero-actions">
-          <a class="cta" href="https://test.layershift.ca">Try the Beta</a>
-          <a class="ghost" href="https://test.layershift.ca">List Your Printer</a>
+        <div class="badge-row">
+          <span class="badge">Early access updates</span>
+          <span class="badge">Local printer network</span>
+          <span class="badge">Faster turnaround</span>
         </div>
       </div>
 
       <div class="hero-card">
-        <div class="preview">
-          <div class="preview-line long"></div>
-          <div class="preview-line medium"></div>
-          <div class="preview-line short"></div>
-          <div class="badge-row">
-            <span class="badge">Fast local pickup</span>
-            <span class="badge">Fewer delays</span>
-            <span class="badge">Real nearby printers</span>
-          </div>
+        <div class="waitlist-panel">
+          <h2>Get on the list</h2>
+          <p>
+            Leave your details and we’ll reach out when LayerShift is ready.
+          </p>
+
+          <form id="waitlistForm">
+            <div>
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" placeholder="Your name" required />
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="you@example.com" required />
+              </div>
+
+              <div>
+                <label for="role">I’m joining as</label>
+                <select id="role" name="role" required>
+                  <option value="">Select one</option>
+                  <option value="customer">Customer</option>
+                  <option value="printer">Printer</option>
+                  <option value="both">Both</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label for="notes">Notes <span style="font-weight:400;color:#8d8d8d;">(optional)</span></label>
+              <textarea id="notes" name="notes" placeholder="Anything you'd like us to know?"></textarea>
+            </div>
+
+            <button class="cta" id="submitBtn" type="submit">Join Waitlist</button>
+
+            <div class="tiny">
+              This page is static. To make submissions save for real, connect the form to your backend,
+              Formspree, Supabase, or another endpoint.
+            </div>
+
+            <div class="status" id="statusBox"></div>
+          </form>
         </div>
       </div>
     </section>
@@ -278,25 +371,84 @@
         <div class="card">
           <div class="step">Step 1</div>
           <h3>Upload your file</h3>
-          <p>Start with your STL, 3MF, OBJ, STEP, or STP file and move from file to quote-ready request fast.</p>
+          <p>Start with your STL, 3MF, OBJ, STEP, or STP file and move from file to request fast.</p>
         </div>
         <div class="card">
           <div class="step">Step 2</div>
           <h3>Choose a local printer</h3>
-          <p>Compare local options by material, turnaround, and pricing without chasing shops one by one.</p>
+          <p>Compare nearby options by material, turnaround, and pricing without chasing shops one by one.</p>
         </div>
         <div class="card">
           <div class="step">Step 3</div>
-          <h3>Send the request</h3>
-          <p>Submit your print request directly and keep production local, simple, and faster to fulfill.</p>
+          <h3>Get it made locally</h3>
+          <p>Keep production local, simple, and faster to fulfill once the platform opens.</p>
         </div>
       </div>
     </section>
 
     <div class="footer">
       <div>© 2026 LayerShift</div>
-      <div>Currently in beta at test.layershift.ca</div>
+      <div>Waitlist now open</div>
     </div>
   </main>
+
+  <script>
+    const form = document.getElementById("waitlistForm");
+    const statusBox = document.getElementById("statusBox");
+    const submitBtn = document.getElementById("submitBtn");
+
+    // Replace this with a real endpoint later.
+    const WAITLIST_ENDPOINT = "";
+
+    function showStatus(message, kind) {
+      statusBox.textContent = message;
+      statusBox.className = "status show " + kind;
+    }
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const payload = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        role: form.role.value,
+        notes: form.notes.value.trim()
+      };
+
+      if (!payload.name || !payload.email || !payload.role) {
+        showStatus("Please fill out your name, email, and role.", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
+
+      try {
+        if (WAITLIST_ENDPOINT) {
+          const response = await fetch(WAITLIST_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            throw new Error("Submission failed.");
+          }
+
+          form.reset();
+          showStatus("You’re on the waitlist. We’ll be in touch.", "success");
+        } else {
+          localStorage.setItem("layershift_waitlist_preview", JSON.stringify(payload));
+          form.reset();
+          showStatus("Waitlist form is working visually. Connect a real endpoint to store submissions.", "success");
+        }
+      } catch (error) {
+        showStatus("Something went wrong while submitting the form.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Join Waitlist";
+      }
+    });
+  </script>
 </body>
 </html>
